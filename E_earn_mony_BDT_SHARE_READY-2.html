@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>E earn mony bdt</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#08111f,#111c38);color:#fff;min-height:100vh}
+.container{max-width:520px;margin:auto;padding:16px}.card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 10px 30px #0005}
+h1,h2,h3,p{margin-top:0}.logo{font-size:30px;font-weight:800;text-align:center}.logo span{color:#4ade80}
+input,select,button{width:100%;padding:13px;border-radius:12px;border:0;margin:7px 0;font-size:15px}
+input,select{background:#fff;color:#111}button{background:#22c55e;color:#07130a;font-weight:800;cursor:pointer}.secondary{background:#334155;color:#fff}.danger{background:#ef4444;color:#fff}
+.hidden{display:none}.balance{font-size:34px;font-weight:900;color:#4ade80}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#0003;border-radius:14px;padding:12px}.task{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;background:#0003;border-radius:14px;margin:8px 0}.task button{width:auto;margin:0;padding:9px 12px}.bar{height:10px;background:#26344c;border-radius:99px;overflow:hidden}.fill{height:100%;background:#4ade80;width:0}.nav{position:sticky;bottom:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#101a2ddd;padding:8px;border-radius:16px;backdrop-filter:blur(10px)}.nav button{font-size:12px;padding:10px 4px;background:#26344c;color:#fff}.small{font-size:12px;color:#b8c4d8}.ok{color:#4ade80}.warn{color:#fbbf24}.err{color:#f87171}
+</style>
+</head>
+<body>
+
+<div id="welcomeOverlay" style="position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#ff4fb3 0,#8b1e68 35%,#080713 100%);padding:20px">
+  <div style="width:min(430px,100%);text-align:center;background:#140d24eF;border:1px solid #ff66c9;border-radius:28px;padding:30px 20px;box-shadow:0 0 50px #ff2fa855">
+    <div style="font-size:58px;animation:floaty 2.5s ease-in-out infinite">🐉✨</div>
+    <h1 style="margin:10px 0;color:#fff">স্বাগতম! 💖</h1>
+    <p style="font-size:18px;line-height:1.6;color:#ffd9ef">আজকের দিনটা হোক সুন্দর।<br>ছোট ছোট কাজ, সুন্দর কিছু অর্জন। 🌸</p>
+    <button onclick="enterSite()" style="background:linear-gradient(90deg,#ec4899,#a855f7);color:white;font-size:17px;padding:14px;border-radius:15px">✨ Enter E earn mony BDT</button>
+    <p style="font-size:12px;color:#c8b7cf;margin:12px 0 0">Play • Task • Earn</p>
+  </div>
+</div>
+<style>
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes sparkle{0%{opacity:.15;transform:translateY(0)}50%{opacity:.8}100%{opacity:.15;transform:translateY(-18px)}}
+body:after{content:"✦  ✧  ✦  ✧  ✦";position:fixed;pointer-events:none;top:12%;left:5%;right:5%;text-align:center;color:#ffd1ee;font-size:28px;letter-spacing:28px;animation:sparkle 3s infinite}
+</style>
+<button id="musicBtn" onclick="toggleMusic()" style="position:fixed;right:14px;top:14px;z-index:999;width:auto;padding:10px 14px;border-radius:999px;background:#ec4899;color:white;box-shadow:0 6px 20px #0006">🎵 Music Off</button>
+<div class="container">
+  <div id="auth">
+    <div class="card">
+      <div class="logo">🎮 E <span>earn mony</span> BDT</div>
+      <p style="text-align:center" class="small">Task-based earning demo</p>
+      <div id="loginBox">
+        <h2>Login</h2>
+        <input id="loginName" placeholder="Name">
+        <input id="loginPass" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <button class="secondary" onclick="showRegister()">Create account</button>
+        <p id="loginMsg"></p>
+      </div>
+      <div id="registerBox" class="hidden">
+        <h2>Create account</h2>
+        <input id="regName" placeholder="Name">
+        <input id="regAge" type="number" min="13" placeholder="Age">
+        <input id="regPass" type="password" placeholder="Password">
+        <button onclick="register()">Sign up</button>
+        <button class="secondary" onclick="showLogin()">Back to login</button>
+        <p id="regMsg"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="card">
+      <div class="logo">🎮 <span>E earn mony BDT</span></div>
+      <p>Welcome, <b id="userName"></b> 👋</p><p style="color:#ffd1ee">🌸 হাসিমুখে শুরু করুন — আপনার প্রতিটি completed task আপনার progress-এর অংশ। ✨</p>
+      <div class="balance">৳ <span id="balance">0</span></div>
+      <p class="small">Available task reward balance</p>
+      <div class="grid">
+        <div class="stat">Today's tasks<br><b id="done">0</b>/15</div>
+        <div class="stat">Total earned<br><b id="earned">0</b> BDT</div>
+      </div>
+    </div>
+
+    <section id="home">
+      <div class="card">
+        <h3>📋 Today's Tasks</h3><div style="background:#0004;border:1px solid #ec4899;border-radius:14px;padding:12px;margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <b>⏱️ Daily Active Time</b><b id="timeLeft">02:00:00</b>
+  </div>
+  <div class="bar" style="margin-top:8px"><div class="fill" id="timeProgress"></div></div>
+  <p class="small" id="timeStatus">Task শুরু করলে active-time timer চলবে।</p>
+  <button id="timerBtn" onclick="toggleTimer()">▶ Start Tasks</button>
+</div>
+        <div class="bar"><div class="fill" id="progress"></div></div>
+        <p class="small" id="progressText">0 / 15 completed</p>
+        <div id="tasks"></div>
+      </div>
+    </section>
+
+    <section id="deposit" class="hidden">
+      <div class="card">
+        <h3>📥 bKash Deposit</h3>
+        <p>Payment method: <b>bKash</b></p>
+        <p>Send Money / payment number:</p>
+        <h2 id="bkash">01818020427</h2>
+        <button onclick="copyBkash()">Copy Number</button>
+        <input id="depAmount" type="number" placeholder="Deposit amount">
+        <input id="depTrx" placeholder="bKash Transaction ID">
+        <button onclick="submitDeposit()">Submit Deposit Request</button>
+        <p id="depMsg" class="small"></p>
+        <p class="warn small">Demo only: this does not automatically verify or transfer money.</p>
+      </div>
+    </section>
+
+    
+<section id="bonusRevenue" class="card" style="margin-top:18px">
+  <h2>🎁 Bonus & Platform Revenue</h2>
+  <p style="opacity:.9">Task Earnings এবং Bonus আলাদা রাখা হয়েছে। Approved provider conversion ছাড়া কোনো bonus credit হবে না।</p>
+
+  <div class="stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0">
+    <div class="stat-card"><small>Task Earnings</small><strong id="taskEarnings">৳0</strong></div>
+    <div class="stat-card"><small>Bonus Balance</small><strong id="bonusBalance">৳0</strong></div>
+    <div class="stat-card"><small>Bonus Withdraw Minimum</small><strong>৳1,000</strong></div>
+  </div>
+
+  <div class="card" style="background:rgba(255,255,255,.05)">
+    <h3>💸 Bonus Withdrawal</h3>
+    <p id="bonusRule">Available bonus ৳1,000 হলে withdrawal request করা যাবে।</p>
+    <input id="bonusWithdrawNumber" placeholder="bKash/Nagad/Rocket wallet number">
+    <input id="bonusWithdrawAmount" type="number" min="1000" placeholder="Amount (minimum ৳1,000)">
+    <button onclick="requestBonusWithdrawal()">Withdraw Bonus</button>
+    <div id="bonusWithdrawMsg" style="margin-top:8px"></div>
+  </div>
+
+  <div class="card" style="background:rgba(255,255,255,.05);margin-top:12px">
+    <h3>📊 Revenue Transparency</h3>
+    <p>Provider payout, user reward, bonus pool এবং platform revenue server-side verified conversion-এর ভিত্তিতে হিসাব হবে। Demo-তে কোনো real provider payout তৈরি করা হচ্ছে না।</p>
+    <div id="revenueDemoLine">Example only: Provider payout ৳100 → Task reward ৳60 → Bonus pool ৳20 → Platform revenue ৳20</div>
+  </div>
+</section>
+
+<section id="withdraw" class="hidden">
+      <div class="card">
+        <h3>📤 Withdraw</h3>
+        <select id="wdMethod"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
+        <input id="wdNumber" placeholder="Wallet number">
+        <input id="wdAmount" type="number" placeholder="Amount">
+        <button onclick="withdraw()">Submit Withdraw Request</button>
+        <p id="wdMsg" class="small"></p>
+      </div>
+    </section>
+
+    <section id="support" class="hidden">
+      <div class="card">
+        <h3>💬 Support</h3>
+        <p>Telegram support/group link can be added by the site owner.</p>
+        <button onclick="alert('Add your Telegram username/group link here.')">Telegram Support</button>
+        <button class="danger" onclick="logout()">Logout</button>
+      </div>
+    </section>
+
+    <div class="nav">
+      <button onclick="tab('home')">🏠 Home</button>
+      <button onclick="tab('deposit')">💳 Deposit</button>
+      <button onclick="tab('withdraw')">💸 Withdraw</button>
+      <button onclick="tab('support')">💬 Support</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY='e_earn_mony_bdt_v2';
+let data=JSON.parse(localStorage.getItem(KEY)||'null');
+if(!data)data={users:{},current:null};
+const tasks=Array.from({length:15},(_,i)=>({id:i+1,title:'🎬 Video Task '+(i+1),reward:5,done:false}));
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function showRegister(){loginBox.classList.add('hidden');registerBox.classList.remove('hidden')}
+function showLogin(){registerBox.classList.add('hidden');loginBox.classList.remove('hidden')}
+function register(){
+ let n=regName.value.trim(),a=regAge.value,p=regPass.value;
+ if(!n||!a||!p)return regMsg.innerHTML='<span class="err">সব তথ্য পূরণ করুন।</span>';
+ if(+a<13)return regMsg.innerHTML='<span class="err">Age must be 13+.</span>';
+ if(data.users[n])return regMsg.innerHTML='<span class="err">এই নামে account আছে।</span>';
+ data.users[n]={name:n,age:+a,pass:p,balance:0,earned:0,tasks:[],depositSubmitted:false,activeSeconds:0};data.current=n;save();openApp();
+}
+function login(){
+ let n=loginName.value.trim(),p=loginPass.value;
+ if(data.users[n]&&data.users[n].pass===p){data.current=n;save();openApp()}
+ else loginMsg.innerHTML='<span class="err">Name অথবা password ভুল।</span>';
+}
+function openApp(){auth.classList.add('hidden');app.classList.remove('hidden');render();loadTimer()}
+function logout(){data.current=null;save();app.classList.add('hidden');auth.classList.remove('hidden');showLogin()}
+function user(){return data.users[data.current]}
+function render(){
+ let u=user();
+ if(typeof updateTimerUI==='function') setTimeout(updateTimerUI,0);userName.textContent=u.name;balance.textContent=u.balance;earned.textContent=u.earned;
+ let completed=u.tasks||[];done.textContent=completed.length;progress.style.width=(completed.length/15*100)+'%';progressText.textContent=completed.length+' / 15 completed';
+ tasksDiv=document.getElementById('tasks');tasksDiv.innerHTML='';
+ if(!u.depositSubmitted){
+   tasksDiv.innerHTML='<div class="card" style="margin:8px 0"><h3>🔒 Tasks Locked</h3><p>Deposit request submit না করা পর্যন্ত tasks open হবে না.</p><button onclick="tab(\'deposit\')">📥 Go to Deposit</button><p class="warn small">Demo flow: deposit submission only unlocks the task area; no automatic payment is made.</p></div>';
+   return;
+ }
+ tasks.forEach(t=>{
+  let d=completed.includes(t.id);
+  let el=document.createElement('div');el.className='task';
+  el.innerHTML='<span>'+t.title+'<br><small>Reward ৳'+t.reward+'</small></span><button '+(d?'disabled':'')+' onclick="doTask('+t.id+')">'+(d?'Done ✓':'Open & Complete')+'</button>';
+  tasksDiv.appendChild(el);
+ })
+}
+function doTask(id){
+ let u=user();if(u.tasks.includes(id))return;
+ // Safe demo task: opens a generic informational video page, then records completion.
+ window.open('https://www.youtube.com/results?search_query=online+learning+video','_blank');
+ u.tasks.push(id);u.balance+=5;u.earned+=5;save();render();
+}
+function copyBkash(){
+ let num='01818020427';
+ if(navigator.clipboard)navigator.clipboard.writeText(num).then(()=>depMsg.textContent='Number copied.');
+ else depMsg.textContent='bKash number: '+num;
+}
+function submitDeposit(){
+ let a=+depAmount.value,t=depTrx.value.trim();
+ if(!a||!t)return depMsg.innerHTML='<span class="err">Amount ও Transaction ID দিন।</span>';
+ let u=user();u.depositSubmitted=true;save();render();
+ depMsg.innerHTML='<span class="ok">Deposit request submitted. Tasks are now unlocked in this demo.</span>';
+}
+function withdraw(){
+ let u=user(),n=wdNumber.value.trim(),a=+wdAmount.value;
+ if(!n||!a)return wdMsg.innerHTML='<span class="err">Wallet number ও amount দিন।</span>';
+ if(a>u.balance)return wdMsg.innerHTML='<span class="err">Insufficient balance.</span>';
+ u.balance-=a;save();render();wdMsg.innerHTML='<span class="ok">Withdraw request submitted.</span>';
+}
+function tab(id){
+ ['home','deposit','withdraw','support'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+}
+
+
+let activeSeconds=0, timerRunning=false, timerInterval=null;
+const TOTAL_ACTIVE_SECONDS=7200;
+
+function loadTimer(){
+  try{
+    const u=user(); activeSeconds=Number(u?.activeSeconds||0);
+  }catch(e){activeSeconds=0}
+  updateTimerUI();
+}
+function saveTimer(){
+  const u=user(); if(!u)return;
+  u.activeSeconds=activeSeconds; save();
+}
+function formatTime(sec){
+  const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), ss=sec%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+}
+function updateTimerUI(){
+  const left=Math.max(0,TOTAL_ACTIVE_SECONDS-activeSeconds);
+  const el=document.getElementById('timeLeft'), bar=document.getElementById('timeProgress');
+  const status=document.getElementById('timeStatus'), btn=document.getElementById('timerBtn');
+  if(!el)return;
+  el.textContent=formatTime(left);
+  bar.style.width=Math.min(100,activeSeconds/TOTAL_ACTIVE_SECONDS*100)+'%';
+  if(left===0){
+    status.innerHTML='<span class="ok">✅ আজকের 2 ঘণ্টার active task time সম্পূর্ণ হয়েছে।</span>';
+    btn.textContent='✓ Completed'; btn.disabled=true;
+  }else{
+    status.textContent=timerRunning?'🟢 Active time চলছে — কাজ করতে থাকুন।':'⏸️ Start চাপলে active-time গণনা শুরু হবে।';
+    btn.textContent=timerRunning?'⏸ Pause Tasks':'▶ Start Tasks'; btn.disabled=false;
+  }
+}
+function toggleTimer(){
+  if(activeSeconds>=TOTAL_ACTIVE_SECONDS)return;
+  timerRunning=!timerRunning;
+  clearInterval(timerInterval);
+  if(timerRunning){
+    timerInterval=setInterval(()=>{
+      if(document.hidden)return; // count only while the task page is visible
+      activeSeconds++;
+      if(activeSeconds>=TOTAL_ACTIVE_SECONDS){
+        activeSeconds=TOTAL_ACTIVE_SECONDS; timerRunning=false; clearInterval(timerInterval);
+      }
+      if(activeSeconds%5===0)saveTimer();
+      updateTimerUI();
+    },1000);
+  }else saveTimer();
+  updateTimerUI();
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden && timerRunning) updateTimerUI();
+});
+
+function enterSite(){
+  const o=document.getElementById('welcomeOverlay');
+  o.style.transition='opacity .5s ease';
+  o.style.opacity='0';
+  setTimeout(()=>o.remove(),520);
+}
+let audioCtx=null, masterGain=null, musicTimer=null, musicOn=false;
+const melody=[261.63,329.63,392.00,523.25,392.00,329.63,293.66,349.23];
+let mi=0;
+function playNote(freq,when,dur){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.type='sine'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,when);
+  g.gain.exponentialRampToValueAtTime(0.045,when+0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001,when+dur);
+  o.connect(g);g.connect(masterGain);o.start(when);o.stop(when+dur+0.04);
+}
+function scheduleMusic(){
+  if(!musicOn)return;
+  const now=audioCtx.currentTime;
+  for(let i=0;i<8;i++) playNote(melody[(mi+i)%melody.length],now+i*0.42,0.34);
+  mi=(mi+8)%melody.length;
+  musicTimer=setTimeout(scheduleMusic,8*420-80);
+}
+async function toggleMusic(){
+  try{
+    if(!audioCtx){
+      audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      masterGain=audioCtx.createGain(); masterGain.gain.value=0.7; masterGain.connect(audioCtx.destination);
+    }
+    if(audioCtx.state==='suspended') await audioCtx.resume();
+    musicOn=!musicOn;
+    const b=document.getElementById('musicBtn');
+    b.textContent=musicOn?'🎵 Music On':'🎵 Music Off';
+    if(musicOn){clearTimeout(musicTimer);scheduleMusic();}
+    else clearTimeout(musicTimer);
+  }catch(e){alert('এই browser-এ music চালু করা যাচ্ছে না।');}
+}
+</script>
+
+<script>
+(function(){
+  const BONUS_MIN = 1000;
+  function key(){ return 'eearn_user'; }
+  function getUser(){
+    try { return JSON.parse(localStorage.getItem(key()) || '{}'); } catch(e){ return {}; }
+  }
+  function saveUser(u){ localStorage.setItem(key(), JSON.stringify(u)); }
+
+  window.refreshBonusUI = function(){
+    const u = getUser();
+    const task = Number(u.taskEarnings || u.balance || 0);
+    const bonus = Number(u.bonusBalance || 0);
+    const te = document.getElementById('taskEarnings');
+    const bb = document.getElementById('bonusBalance');
+    if(te) te.textContent = '৳' + task.toFixed(2);
+    if(bb) bb.textContent = '৳' + bonus.toFixed(2);
+  };
+
+  window.requestBonusWithdrawal = function(){
+    const u = getUser();
+    const bonus = Number(u.bonusBalance || 0);
+    const amount = Number(document.getElementById('bonusWithdrawAmount')?.value || 0);
+    const wallet = (document.getElementById('bonusWithdrawNumber')?.value || '').trim();
+    const msg = document.getElementById('bonusWithdrawMsg');
+
+    if(bonus < BONUS_MIN) {
+      msg.textContent = '❌ Bonus balance ৳1,000 না হওয়া পর্যন্ত withdrawal করা যাবে না।';
+      return;
+    }
+    if(amount < BONUS_MIN || amount > bonus) {
+      msg.textContent = '❌ Amount আপনার available bonus-এর মধ্যে হতে হবে এবং minimum ৳1,000।';
+      return;
+    }
+    if(!wallet) {
+      msg.textContent = '❌ Wallet number দিন।';
+      return;
+    }
+
+    u.bonusWithdrawals = u.bonusWithdrawals || [];
+    u.bonusWithdrawals.push({
+      amount, wallet, status:'Pending', createdAt:new Date().toISOString()
+    });
+    // Demo behavior: reserve the requested amount. Real production payout must be server/admin verified.
+    u.bonusBalance = bonus - amount;
+    saveUser(u);
+    msg.textContent = '✅ Bonus withdrawal request submitted — Status: Pending';
+    refreshBonusUI();
+  };
+
+  // Optional demo-only provider credit helper for testing UI.
+  window.demoCreditBonus = function(amount){
+    const u = getUser();
+    u.bonusBalance = Number(u.bonusBalance || 0) + Number(amount || 0);
+    saveUser(u);
+    refreshBonusUI();
+  };
+
+  document.addEventListener('DOMContentLoaded', refreshBonusUI);
+})();
+</script>
+
+<!-- Production note: real provider postbacks, payment verification, and payouts require a secure backend. -->
+
+<section id="shareLinkBox" style="margin:18px 0;padding:18px;border-radius:20px;background:linear-gradient(135deg,#ff4f9a,#8b5cf6);color:white;text-align:center;box-shadow:0 8px 25px #0002"><h3 style="margin:0 0 10px">🔗 Share Link</h3><p style="margin:0 0 12px;font-size:13px">বন্ধুদের সাথে লিংকটি শেয়ার করুন</p><input id="shareLink" readonly style="width:100%;box-sizing:border-box;padding:11px;border:0;border-radius:10px;margin-bottom:10px;background:#fff;color:#333"><div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center"><button onclick="copyShareLink()">📋 Copy Link</button><button onclick="shareFB()">📘 Facebook</button><button onclick="shareWA()">💬 WhatsApp</button><button onclick="shareTG()">✈️ Telegram</button></div></section>
+<script>
+(function(){var base=location.href.split('#')[0].split('?')[0];document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('shareLink');if(e)e.value=base;});window.copyShareLink=function(){var e=document.getElementById('shareLink');navigator.clipboard&&navigator.clipboard.writeText(e.value).then(function(){alert('✅ Link copied!')}).catch(function(){e.select();document.execCommand('copy');alert('✅ Link copied!')});};window.shareFB=function(){window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(document.getElementById('shareLink').value),'_blank')};window.shareWA=function(){window.open('https://wa.me/?text='+encodeURIComponent('এই সাইটটি দেখুন: '+document.getElementById('shareLink').value),'_blank')};window.shareTG=function(){window.open('https://t.me/share/url?url='+encodeURIComponent(document.getElementById('shareLink').value)+'&text='+encodeURIComponent('এই সাইটটি দেখুন'),'_blank')};})();
+</script>
+</body>
+</html>
